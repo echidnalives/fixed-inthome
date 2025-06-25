@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homelessness Journey - Branch: Move in with Parents</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 2rem;
+      max-width: 700px;
+      margin: auto;
+      color: #333;
+    }
+    .story {
+      margin-bottom: 1.5rem;
+    }
+    .choices button {
+      display: block;
+      margin: 0.5rem 0;
+      padding: 0.75rem;
+      font-size: 1rem;
+      background: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .choices button:hover {
+      background: #357ab8;
+    }
+  </style>
+</head>
+<body>
+  <h1>Interactive Homelessness Journey</h1>
+  <div id="story" class="story"></div>
+  <div id="choices" class="choices"></div>
+
+  <script>
+    const storyData = {
+      start: {
+        text: "You take a bus up to Sydney to stay with your parents. All is going well; however, you begin to get irritated with your parents treating you like a \"useless tramp\". You live with it for a few weeks until you just can’t take it anymore.",
+        choices: [
+          { text: "Move out and try to get into a homeless shelter", next: "shelter" },
+          { text: "Attack them", next: "attack_parents" },
+        ]
+      },
+      shelter: {
+        text: "You apply online to get into a homeless shelter in Sydney and succeed. It’s cramped and uncomfortable, but at least it’s something. What should you do next?",
+        choices: [
+          { text: "Apply for a job at the local library", next: "library_job" },
+          { text: "Complain to the homeless shelter manager about the conditions", next: "complain_shelter" },
+        ]
+      },
+      library_job: {
+        text: "You get accepted! It’s minimum wage and isn’t enough for you to rent just yet, but it’s a start.",
+        choices: [
+          { text: "Save up to try and rent a studio apartment", next: "save_apartment" },
+          { text: "Buy a new iPhone", next: "buy_phone" },
+        ]
+      },
+      save_apartment: {
+        text: "You start saving up but end up getting a serious dental problem. Luckily, you have the savings to pay for it, but you can’t afford rent yet.",
+        choices: [
+          { text: "Have an honest conversation with your parents about moving back in, but set boundaries around treatment", next: "move_back_success" },
+          { text: "Give up on the homeless shelter and move onto the street", next: "move_street" },
+        ]
+      },
+      move_back_success: {
+        text: "You have a serious conversation with your parents about setting boundaries and treatment. They agree, and you move back in with them. You now have a stable place to stay and a source of income. It’s a start.",
+        choices: []
+      },
+      move_street: {
+        text: "You give up on the shelter and move onto the street. With a weakened immune system from your recent dental problems, your condition worsens quickly."
+        , choices: []
+      },
+      buy_phone: {
+        text: "You upgrade to the iPhone 16 despite already having a fine phone. You later get a dental issue but now have no savings and aren't talking to your parents.",
+        choices: [
+          { text: "Try to get through it", next: "tooth_pain" },
+          { text: "Attempt to remove the teeth yourself", next: "remove_teeth" },
+        ]
+      },
+      tooth_pain: {
+        text: "The pain gets worse and you miss work. With no sick leave and only a month on the job, you’re fired. You lie in bed at the shelter in pain.",
+        choices: []
+      },
+      remove_teeth: {
+        text: "You remove your teeth despite the pain. Turns out the issue was in your gums. You now have no teeth, same pain, and no hope left.",
+        choices: []
+      },
+      complain_shelter: {
+        text: "The shelter manager gets annoyed and evicts you. You feel it might be illegal but aren’t sure.",
+        choices: [
+          { text: "Sleep under a bridge", next: "sleep_bridge" },
+          { text: "Go to a lawyer", next: "lawyer" },
+        ]
+      },
+      lawyer: {
+        text: "You visit several lawyers, but none will speak with you unless you can pay. You’re stuck.",
+        choices: [
+          { text: "Sleep on the side of the road", next: "sleep_road" },
+          { text: "Sleep under a bridge", next: "sleep_bridge" },
+        ]
+      },
+      sleep_road: {
+        text: "You sleep on the side of the road with no clear future ahead.",
+        choices: []
+      },
+      sleep_bridge: {
+        text: "You sleep under a bridge and feel like you’ve run out of options.",
+        choices: []
+      },
+      attack_parents: {
+        text: "You snap and attack your parents. Your mum escapes, but your dad is severely injured. The police arrest you.",
+        choices: [
+          { text: "Plead guilty", next: "plead_guilty" },
+          { text: "Plead not guilty", next: "plead_not_guilty" },
+        ]
+      },
+      plead_guilty: {
+        text: "You are sentenced to four years in prison. It seems there's no way to recover your old life.",
+        choices: []
+      },
+      plead_not_guilty: {
+        text: "With no money or legal experience, you represent yourself. You are found guilty and sentenced to six years. A lawyer may have helped you.",
+        choices: []
+      }
+    };
+
+    function render(node) {
+      const story = document.getElementById("story");
+      const choices = document.getElementById("choices");
+      story.textContent = node.text;
+      choices.innerHTML = "";
+
+      if (!node.choices || node.choices.length === 0) {
+        const end = document.createElement("p");
+        end.innerHTML = "<strong>The End</strong>";
+        choices.appendChild(end);
+        return;
+      }
+
+      node.choices.forEach(choice => {
+        const btn = document.createElement("button");
+        btn.textContent = choice.text;
+        btn.onclick = () => render(storyData[choice.next]);
+        choices.appendChild(btn);
+      });
+    }
+
+    render(storyData.start);
+  </script>
+</body>
+</html>

@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Homelessness Journey - Branch: Street</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 2rem;
+      max-width: 700px;
+      margin: auto;
+      color: #333;
+    }
+    .story {
+      margin-bottom: 1.5rem;
+    }
+    .choices button {
+      display: block;
+      margin: 0.5rem 0;
+      padding: 0.75rem;
+      font-size: 1rem;
+      background: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .choices button:hover {
+      background: #357ab8;
+    }
+  </style>
+</head>
+<body>
+  <h1>Interactive Homelessness Journey</h1>
+  <div id="story" class="story"></div>
+  <div id="choices" class="choices"></div>
+
+  <script>
+    const storyData = {
+      start: {
+        text: "You move onto the street.",
+        choices: [
+          { text: "Try to get emergency accommodation", next: "emergency1" },
+          { text: "Try to get a job at Maccas", next: "maccas1" },
+        ]
+      },
+      emergency1: {
+        text: "You get rejected from local housing support services because their facilities are at capacity following a spike in rental affordability.",
+        choices: [
+          { text: "Try again", next: "maccas1" },
+        ]
+      },
+      maccas1: {
+        text: "The manager instantly rejects you when they find out you’re homeless.",
+        choices: [
+          { text: "Sleep on the side of the road", next: "side_road" },
+          { text: "Sleep under a bridge", next: "bridge" },
+        ]
+      },
+      side_road: {
+        text: "Overnight, everything gets stolen, and you start to feel sick for no apparent reason.",
+        choices: [
+          { text: "Go to the hospital, despite your Medicare card being stolen", next: "hospital" },
+          { text: "Try to get through it", next: "sick1" },
+        ]
+      },
+      bridge: {
+        text: "Overnight, everything gets stolen, and you start to feel sick for no apparent reason.",
+        choices: [
+          { text: "Go to the hospital, despite your Medicare card being stolen", next: "hospital" },
+          { text: "Try to get through it", next: "sick1" },
+        ]
+      },
+      sick1: {
+        text: "The sickness gets worse, and you start throwing up.",
+        choices: [
+          { text: "Go to the hospital, despite your Medicare card being stolen", next: "hospital" },
+          { text: "Try to get through more", next: "death_poison" },
+        ]
+      },
+      death_poison: {
+        text: "Turns out you were inadvertently poisoned, and you end up passing away.",
+        choices: []
+      },
+      hospital: {
+        text: "Turns out you’ve been inadvertently poisoned, but you got to the hospital just in time to receive life-saving treatment. However, without any Medicare card or ID, the hospital can’t prove that you’re eligible for Medicare. They charge you $4000.",
+        choices: [
+          { text: "Fight the nurses", next: "fight" },
+          { text: "Accept bankruptcy", next: "bankrupt" },
+        ]
+      },
+      fight: {
+        text: "Security is called. Due to your weak condition, one hit from the guard knocks you unconscious and you succumb to your injuries.",
+        choices: []
+      },
+      bankrupt: {
+        text: "After declaring yourself bankrupt, you have nothing left. However, you need food.",
+        choices: [
+          { text: "Steal from the Coles dumpster", next: "dumpster" },
+          { text: "Try to get through", next: "death_starve" },
+        ]
+      },
+      death_starve: {
+        text: "As you have only just recovered from your poisoning, going without food for a few days is fatal. You end up starving to death.",
+        choices: []
+      },
+      dumpster: {
+        text: "You find some fruit in the Coles dumpster. Turns out it was part of a bad batch and you get food poisoning. You don’t want to go back to the hospital.",
+        choices: [
+          { text: "Try to get through", next: "death_food_poisoning" },
+        ]
+      },
+      death_food_poisoning: {
+        text: "As you have only just recovered from your poisoning, you are particularly vulnerable. The food poisoning is fatal.",
+        choices: []
+      },
+    };
+
+    function render(node) {
+      const story = document.getElementById("story");
+      const choices = document.getElementById("choices");
+      story.textContent = node.text;
+      choices.innerHTML = "";
+
+      if (node.choices.length === 0) {
+        const end = document.createElement("p");
+        end.innerHTML = "<strong>The End</strong>";
+        choices.appendChild(end);
+        return;
+      }
+
+      node.choices.forEach(choice => {
+        const btn = document.createElement("button");
+        btn.textContent = choice.text;
+        btn.onclick = () => render(storyData[choice.next]);
+        choices.appendChild(btn);
+      });
+    }
+
+    render(storyData.start);
+  </script>
+</body>
+</html>

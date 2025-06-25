@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homelessness Journey - Branch: Apply for Centrelink</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f2f2f2;
+      padding: 2rem;
+      max-width: 700px;
+      margin: auto;
+      color: #333;
+    }
+    .story {
+      margin-bottom: 1.5rem;
+    }
+    .choices button {
+      display: block;
+      margin: 0.5rem 0;
+      padding: 0.75rem;
+      font-size: 1rem;
+      background: #4a90e2;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .choices button:hover {
+      background: #357ab8;
+    }
+  </style>
+</head>
+<body>
+  <h1>Interactive Homelessness Journey</h1>
+  <div id="story" class="story"></div>
+  <div id="choices" class="choices"></div>
+
+  <script>
+    const storyData = {
+      start: {
+        text: "You apply for Centrelink. Because you're under 22 and your parents have a steady wage, Services Australia considers you a dependent. You could appeal this decision, but it would be costly and might fail.",
+        choices: [
+          { text: "Appeal to the Administrative Review Tribunal", next: "appeal_success" },
+          { text: "Move in with your parents", next: "move_parents" },
+          { text: "Take your little remaining savings to the casino", next: "casino" },
+        ]
+      },
+      appeal_success: {
+        text: "The Tribunal overturns the decision! But you've spent all your savings doing it. Now you only have Centrelink payments.",
+        choices: [
+          { text: "Try and get a small rental apartment", next: "rental_fail" },
+          { text: "Ask a friend if you can stay with them for a few nights", next: "ask_friend" },
+        ]
+      },
+      rental_fail: {
+        text: "Rents have skyrocketed. You can't afford an apartment, only a tiny room in a large share house of strangers.",
+        choices: [
+          { text: "Move into the tiny room", next: "sharehouse" },
+          { text: "Sleep under the bridge", next: "bridge" },
+        ]
+      },
+      sharehouse: {
+        text: "A guy named Donald steals all your stuff and flees. You find a clue to his location but don’t want to involve the police.",
+        choices: [
+          { text: "Take it into your own hands", next: "confront_donald" },
+          { text: "Forget about it and try to get emergency housing", next: "bridge" },
+        ]
+      },
+      confront_donald: {
+        text: "You find Donald at an abandoned farmhouse. He pulls a knife on you.",
+        choices: [
+          { text: "Try to take him on with your fists", next: "stabbed" },
+          { text: "Run away", next: "run_away" },
+        ]
+      },
+      stabbed: {
+        text: "Donald stabs you repeatedly. You pass away.",
+        choices: []
+      },
+      run_away: {
+        text: "You're trapped between Donald and cars speeding by. You die on the roadside.",
+        choices: []
+      },
+      ask_friend: {
+        text: "You stay with your friend Alex. All goes well until a fight starts over your behaviour. Alex gets violent and tries to punch you.",
+        choices: [
+          { text: "Defend yourself and punch them back", next: "self_defence" },
+          { text: "Do nothing", next: "coma" },
+        ]
+      },
+      coma: {
+        text: "Alex hits you. You fall, hit your head, and fall into a coma. You survive, but there's no real path to recovery. Alex is arrested.",
+        choices: []
+      },
+      self_defence: {
+        text: "You injure Alex defending yourself. Neighbours call police. Alex survives, but you're charged with aggravated assault.",
+        choices: [
+          { text: "Plead guilty", next: "guilty" },
+          { text: "Plead not guilty", next: "not_guilty" },
+        ]
+      },
+      guilty: {
+        text: "You're sentenced to four years in prison. There's no way to recover your life.",
+        choices: []
+      },
+      not_guilty: {
+        text: "You represent yourself, lacking funds for a lawyer. You’re found guilty and sentenced to 6 years. A lawyer might have helped.",
+        choices: []
+      },
+      casino: {
+        text: "You lose everything within an hour. Did you really think that was a good idea?",
+        choices: []
+      },
+      move_parents: {
+        text: "See the 'Move in with your parents' branch.",
+        choices: []
+      },
+      bridge: {
+        text: "You sleep under a bridge and feel hopeless.",
+        choices: []
+      }
+    };
+
+    function render(node) {
+      const story = document.getElementById("story");
+      const choices = document.getElementById("choices");
+      story.textContent = node.text;
+      choices.innerHTML = "";
+
+      if (!node.choices || node.choices.length === 0) {
+        const end = document.createElement("p");
+        end.innerHTML = "<strong>The End</strong>";
+        choices.appendChild(end);
+        return;
+      }
+
+      node.choices.forEach(choice => {
+        const btn = document.createElement("button");
+        btn.textContent = choice.text;
+        btn.onclick = () => render(storyData[choice.next]);
+        choices.appendChild(btn);
+      });
+    }
+
+    render(storyData.start);
+  </script>
+</body>
+</html>
