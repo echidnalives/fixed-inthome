@@ -1,0 +1,89 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interactive Homelessness Journey</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to right, #d7e1ec, #f3f6f9);
+      padding: 2rem;
+      max-width: 700px;
+      margin: auto;
+      color: #333;
+    }
+    #story {
+      background: white;
+      padding: 2rem;
+      border-radius: 1.5rem;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
+      transition: all 0.4s ease-in-out;
+    }
+    #story h2 {
+      margin-top: 0;
+      color: #1a4c8b;
+    }
+    .option-button {
+      display: block;
+      width: 100%;
+      margin-top: 1rem;
+      padding: 0.75rem 1rem;
+      background-color: #1a4c8b;
+      color: white;
+      border: none;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.2s;
+    }
+    .option-button:hover {
+      background-color: #133865;
+    }
+  </style>
+</head>
+<body>
+  <div id="story">
+    <h2>Interactive Homelessness Journey</h2>
+    <div id="text"></div>
+    <div id="options"></div>
+  </div>
+
+  <script>
+    const story = {};
+
+    function showScene(key) {
+      const scene = story[key];
+      const textDiv = document.getElementById("text");
+      const optionsDiv = document.getElementById("options");
+
+      textDiv.textContent = scene.text;
+      optionsDiv.innerHTML = "";
+
+      if (!scene.options || scene.options.length === 0) {
+        const endBtn = document.createElement("button");
+        endBtn.textContent = "Start Over";
+        endBtn.className = "option-button";
+        endBtn.onclick = () => showScene("start");
+        optionsDiv.appendChild(endBtn);
+      } else {
+        scene.options.forEach(opt => {
+          const btn = document.createElement("button");
+          btn.textContent = opt.text;
+          btn.className = "option-button";
+          btn.onclick = () => showScene(opt.next);
+          optionsDiv.appendChild(btn);
+        });
+      }
+    }
+
+    fetch("story.json")
+      .then(response => response.json())
+      .then(data => {
+        Object.assign(story, data);
+        showScene("start");
+      });
+  </script>
+</body>
+</html>
